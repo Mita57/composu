@@ -112,6 +112,11 @@ ProjectAttachments.belongsTo(Projects, {
     as: 'project_fk',
     onDelete: 'CASCADE',
 });
+ProjectAttachments.belongsTo(User, {
+    foreignKey: 'user',
+    as: 'user_fk',
+    onDelete: 'CASCADE',
+});
 Projects.hasMany(ProjectAttachments);
 
 ProjectFollowers.belongsTo(Projects);
@@ -124,6 +129,18 @@ ProjectMembers.belongsTo(Projects, {
 });
 Projects.hasMany(ProjectMembers);
 
+Roles.belongsTo(ProjectMembers, {
+    foreignKey: 'role',
+    as: 'role_fk',
+    onDelete: 'CASCADE'
+});
+ProjectMembers.hasOne(Roles, {
+        foreignKey: 'role',
+        as: 'role_fk',
+        onDelete: 'CASCADE'
+    }
+);
+
 UserBlogPost.belongsTo(User, {
     foreignKey: 'user',
     as: 'user_fk',
@@ -132,14 +149,45 @@ UserBlogPost.belongsTo(User, {
 User.hasMany(UserBlogPost);
 
 UserFollowers.belongsTo(User);
-User.hasMany(UserFollowers);
+User.hasMany(UserFollowers, {
+        foreignKey: 'follower',
+        as: 'follower_fk',
+        onDelete: 'CASCADE',
+});
+
+User.hasMany(UserFollowers, {
+    foreignKey: 'following',
+    as: 'following_fk',
+    onDelete: 'CASCADE',
+});
+
 
 UserRatings.belongsTo(User, {
     foreignKey: 'user',
     as: 'user_fk',
     onDelete: 'CASCADE',
 });
+
+UserRatings.belongsTo(User, {
+    foreignKey: 'rating_for',
+    as: 'for_fk',
+    onDelete: 'CASCADE',
+});
 User.hasMany(UserRatings);
+
+ProjectDiscussionPost.belongsTo(User, {
+    foreignKey: 'user',
+    as: 'user_fk',
+    onDelete: 'CASCADE'
+});
+
+ProjectDiscussionPost.belongsTo(Projects, {
+    foreignKey: 'project',
+    as: 'project_fk',
+    onDelete: 'CASCADE'
+});
+
+Projects.hasMany(ProjectDiscussionPost);
 
 module.exports = {
     User,
