@@ -5,10 +5,15 @@ const express = require('express');
 const cors = require('cors');
 const router = require('./routes/index');
 const errorHandler = require('./middleware/ErrorHandlingMIddleware');
+const fileUpload = require('express-fileupload');
+const path = require('path');
 
 const app = express();
+
 app.use(cors());
 app.use(express.json());
+app.use(express.static(path.resolve(__dirname, 'static')));
+app.use(fileUpload({}));
 app.use('/api ', router);
 
 // le dernier middleware
@@ -21,8 +26,7 @@ const start = async () => {
         app.listen(process.env.PORT, () => {
             console.log('Server running on port ' + process.env.PORT);
         });
-    }
-    catch (e) {
+    } catch (e) {
         console.log(e);
     }
 }

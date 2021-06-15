@@ -4,4 +4,6 @@ const equipmentController = require('../controllers/equipmentController');
 
 router.post('/addEquipment', equipmentController.create);
 router.get('/getEquipmentByUser', equipmentController.getAllByUser);
-roter.get('/getEqupmentById', equipmentController.getOne);
+router.get('/getEqupmentById', equipmentController.getOne);
+
+module.exports = router;

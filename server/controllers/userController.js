@@ -1,19 +1,19 @@
-const ApiError = require('../error/error');
+const ApiError = require('../error/apiError');
 const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const {User, Basket} = require('../models/models');
+const jwt = require('jsonw ebtoken');
+const {User} = require('../models/models');
 
 const generateJwt = (id, email, role) => {
     return jwt.sign(
         {id, email, role},
         process.env.SECRET_KEY,
-        {expiresIn: '24h'}
+        {expiresIn: '7d'}
     )
 }
 
 class UserController {
     async registration(req, res, next) {
-        const {email, password, role} = req.body;
+        const {email, password} = req.body;
         if (!email || !password) {
             return next(ApiError.badRequest('Invalid email or password'));
         }
@@ -22,8 +22,7 @@ class UserController {
             return next(ApiError.badRequest('A user with the same email already exists'));
         }
         const hashPassword = await bcrypt.hash(password, 5);
-        const user = await User.create({email, role, password: hashPassword});
-        const basket = await Basket.create({userId: user.id});
+        const user = await User.create({email, password: hashPassword});
         const token = generateJwt(user.id, user.email, user.role);
         return res.json({token});
     }
@@ -32,11 +31,11 @@ class UserController {
         const {email, password} = req.body;
         const user = await User.findOne({where: {email}});
         if (!user) {
-            return next(ApiError.internal('User not found'));
+            return next(ApiError.notFound('User not found'));
         }
         let comparePassword = bcrypt.compareSync(password, user.password);
         if (!comparePassword) {
-            return next(ApiError.internal('Invalid credentials'));
+            return next(ApiError.badRequest('Invalid credentials'));
         }
         const token = generateJwt(user.id, user.email, user.role);
         return res.json({token});
