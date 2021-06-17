@@ -81,6 +81,7 @@ const Equipment = sequelize.define('equipment', {
     owner: {type: DataTypes.STRING},
     name: {type: DataTypes.STRING},
     type: {type: DataTypes.STRING},
+    picture: {type: DataTypes.STRING},
     details: {type: DataTypes.TEXT},
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true}
 });

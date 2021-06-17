@@ -93,11 +93,19 @@ class UserController {
         return res.json(id);
     }
 
+    async getAll(req, res) {
+
+        const users = await User.findAll();
+
+        return res.json(users);
+    }
+
     async findUserById (req, res) {
-        const {id} = req.query.id;
+        const id = req.query.email;
+
 
         const users = await User.findByPk(id);
-        return res.json(id);
+        return res.json(users);
     }
 
     async findUsersByFilter(req, res) {

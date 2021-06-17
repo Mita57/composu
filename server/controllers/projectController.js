@@ -97,6 +97,14 @@ class ProjectController {
         return res.json(projId);
     }
 
+    async getAll(req, res) {
+        const {projId} = req.body;
+
+        const proj = await Projects.findAll();
+
+        return res.json(proj);
+    }
+
 
 }
 

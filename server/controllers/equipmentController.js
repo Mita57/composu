@@ -8,10 +8,11 @@ class EquipmentController {
     }
 
     async getAllByUser(req, res) {
-        const {user} = req.body;
+        const {user} = req.query;
+        console.log()
         const eqs = await Equipment.findAll({
             where: {
-                user: user
+                owner: user
             }
         });
         return res.json(eqs);
