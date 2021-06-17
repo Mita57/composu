@@ -2,6 +2,7 @@ const {Project} = require('../models/models');
 const ApiError = require('../error/ApiError');
 const uuid = require('uuid');
 const path = require('path');
+const {Sequelize, Op} = require("sequelize");
 
 class ProjectController {
     async create(req, res, next) {
@@ -29,12 +30,22 @@ class ProjectController {
     }
 
     async getAllWithFilter(req, res) {
-        const {user} = req.body;
+        const {title, details, owner} = req.body;
+
         const projs = await Project.findAll({
             where: {
-                user: user
+                title: {
+                    [Op.like]: `%${title}%`
+                },
+                details: {
+                    [Op.like]: `%${details}`
+                },
+                owner: {
+                    [Op.like]: `%${owner}%`
+                }
             }
         });
+
         return res.json(projs);
     }
 
@@ -45,6 +56,41 @@ class ProjectController {
             return res.status(404).json({message: 'No projects with this ID '});
         }
         return res.json(project);
+    }
+
+    async updateProj(req, res) {
+        const {projId, title, details, state} = req.body;
+        const {picture} = req.files;
+        const proj = Project.findByPk(projId);
+        if (picture) {
+            let filename = uuid.v4() + '.jpg';
+            await picture.mv(path.resolve(__dirname, '..', 'static', filename));
+            proj.picture = filename;
+        }
+
+        if (title) {
+            proj.title = title;
+        }
+
+        if (details) {
+            proj.details = details;
+        }
+
+        if (state) {
+            proj.state = state;
+        }
+
+        await proj.save();
+        return res.json(proj);
+    }
+
+    async deleteProj(req, res) {
+        const {projId} = req.body;
+
+        const proj = await Project.findByPk(projId);
+        await proj.destroy();
+
+        return res.json(projId);
     }
 
 
