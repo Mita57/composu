@@ -4,6 +4,7 @@ const {DataTypes} = require('sequelize');
 const User = sequelize.define('user', {
     email: {type: DataTypes.STRING, primaryKey: true},
     name: {type: DataTypes.STRING},
+    password: {type: DataTypes.STRING},
     reg_date: {type: DataTypes.DATE},
     birth_date: {type: DataTypes.DATE},
     bio: {type: DataTypes.TEXT},
@@ -56,7 +57,7 @@ const ProjectFollowers = sequelize.define('project_followers', {
     following: {type: DataTypes.STRING}
 });
 
-const ProjectDiscussionPost = sequelize.define('project_discussion_pist', {
+const ProjectDiscussionPost = sequelize.define('project_discussion_post', {
     id: {type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true},
     project: {type: DataTypes.INTEGER},
     user: {type: DataTypes.STRING},
@@ -80,6 +81,7 @@ const Equipment = sequelize.define('equipment', {
     owner: {type: DataTypes.STRING},
     name: {type: DataTypes.STRING},
     type: {type: DataTypes.STRING},
+    picture: {type: DataTypes.STRING},
     details: {type: DataTypes.TEXT},
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true}
 });
@@ -89,3 +91,118 @@ const BlogPostComments = sequelize.define('blog_post_comments', {
     user: {type: DataTypes.STRING},
     text: {type: DataTypes.TEXT}
 });
+
+BlogPostComments.belongsTo(User, {
+    foreignKey: 'user',
+    as: 'user_fk',
+    onDelete: 'CASCADE',
+});
+User.hasMany(BlogPostComments);
+
+Equipment.belongsTo(User);
+User.hasMany(Equipment);
+
+EquipmentPhotos.belongsTo(Equipment, {
+    foreignKey: 'equipment',
+    as: 'equipment_fk',
+    onDelete: 'CASCADE',
+});
+Equipment.hasMany(EquipmentPhotos);
+
+ProjectAttachments.belongsTo(Projects, {
+    foreignKey: 'project',
+    as: 'project_fk',
+    onDelete: 'CASCADE',
+});
+ProjectAttachments.belongsTo(User, {
+    foreignKey: 'user',
+    as: 'user_fk',
+    onDelete: 'CASCADE',
+});
+Projects.hasMany(ProjectAttachments);
+
+ProjectFollowers.belongsTo(Projects);
+Projects.hasMany(ProjectFollowers);
+
+ProjectMembers.belongsTo(Projects, {
+    foreignKey: 'project',
+    as: 'project_fk',
+    onDelete: 'CASCADE'
+});
+Projects.hasMany(ProjectMembers);
+
+Roles.belongsTo(ProjectMembers, {
+    foreignKey: 'role',
+    as: 'role_fk',
+    onDelete: 'CASCADE'
+});
+ProjectMembers.hasOne(Roles, {
+        foreignKey: 'role',
+        as: 'role_fk',
+        onDelete: 'CASCADE'
+    }
+);
+
+UserBlogPost.belongsTo(User, {
+    foreignKey: 'user',
+    as: 'user_fk',
+    onDelete: 'CASCADE',
+});
+User.hasMany(UserBlogPost);
+
+UserFollowers.belongsTo(User);
+User.hasMany(UserFollowers, {
+        foreignKey: 'follower',
+        as: 'follower_fk',
+        onDelete: 'CASCADE',
+});
+
+User.hasMany(UserFollowers, {
+    foreignKey: 'following',
+    as: 'following_fk',
+    onDelete: 'CASCADE',
+});
+
+
+UserRatings.belongsTo(User, {
+    foreignKey: 'user',
+    as: 'user_fk',
+    onDelete: 'CASCADE',
+});
+
+UserRatings.belongsTo(User, {
+    foreignKey: 'rating_for',
+    as: 'for_fk',
+    onDelete: 'CASCADE',
+});
+User.hasMany(UserRatings);
+
+ProjectDiscussionPost.belongsTo(User, {
+    foreignKey: 'user',
+    as: 'user_fk',
+    onDelete: 'CASCADE'
+});
+
+ProjectDiscussionPost.belongsTo(Projects, {
+    foreignKey: 'project',
+    as: 'project_fk',
+    onDelete: 'CASCADE'
+});
+
+Projects.hasMany(ProjectDiscussionPost);
+
+module.exports = {
+    User,
+    UserRatings,
+    UserFollowers,
+    UserBlogPost,
+    Roles,
+    Projects,
+    ProjectMembers,
+    ProjectFollowers,
+    ProjectDiscussionPost,
+    ProjectAttachments,
+    EquipmentPhotos,
+    Equipment,
+    BlogPostComments
+}
