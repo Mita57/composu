@@ -3,6 +3,7 @@ import React, {useContext} from 'react';
 import {Link} from "react-router-dom";
 import {Context} from "../index";
 import {observer} from "mobx-react-lite";
+import UserStore from "../store/UserStore";
 
 const NavBar = observer(() => {
     const navBarStyle = {
@@ -32,8 +33,8 @@ const NavBar = observer(() => {
                         <Link style={{textDecoration: 'none', padding: '10px', color: 'white'}}
                               to={'/register'}>Зарегаца</Link></div>:
                     <div style={{marginLeft: 'auto', padding: '10px'}}>
-                        <Link style={{textDecoration: 'none', padding: '10px', color: 'white'}}
-                              to={'/'}>{'asdasd'}</Link>
+                        <a style={{textDecoration: 'none', padding: '10px', color: 'white'}}
+                              href={'http://localhost:3000/musicians/'+user.user.email}>{user.user.email}</a>
                         <div onClick={logOut} style={{    'display': 'contents', 'cursor': 'pointer', 'color': 'white'}}>Выйти</div>
                     </div>
                 }

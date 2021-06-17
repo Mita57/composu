@@ -3,6 +3,8 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const {User} = require('../models/models');
 const {Op} = require("sequelize");
+const uuid = require('uuid');
+const path = require('path');
 
 const generateJwt = (id, email, role) => {
     return jwt.sign(
@@ -14,7 +16,7 @@ const generateJwt = (id, email, role) => {
 
 class UserController {
     async registration(req, res, next) {
-        const {email, password, location, band} = req.body;
+        const {email, password, name, location, band} = req.body;
         if (!email || !password) {
             return next(ApiError.badRequest('Invalid email or password'));
         }
@@ -23,7 +25,7 @@ class UserController {
             return next(ApiError.badRequest('A user with the same email already exists'));
         }
 
-        const picture = req.files ? req.files.picture: null;
+        const picture = req.files ? req.files.picture : null;
         let filename = '';
 
         if (picture) {
@@ -34,8 +36,9 @@ class UserController {
         }
 
         const hashPassword = await bcrypt.hash(password, 5);
-        const user = await User.create({email, band, location, password: hashPassword, photo: filename});
-        const token = generateJwt(user.id, user.email, user.role);
+        console.log(email, band, location, name, filename, password);
+        const user = await User.create({email, band, location, name, password: hashPassword, photo: filename});
+        const token = generateJwt(user.id, user.email);
         return res.json({token});
     }
 

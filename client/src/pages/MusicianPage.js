@@ -81,7 +81,7 @@ const MusicianPage = () => {
             <h2 style={{fontFamily: 'sans-serif', textAlign: 'center'}}>Проекты</h2>
             <div  style={containerStyle}>
                 {projs.map(item => (
-                    <a style={{textDecoration: 'none', color: '#000'}} href={'musicians/' + item.email}>
+                    <a style={{textDecoration: 'none', color: '#000'}} href={'http://localhost:3000/proj/' + item.id}>
                         <div style={itemStyle}>
                             {item.title}
                             <img src={'http://localhost:5000/' + item.picture} style={imgStyleSmol}></img><br></br>
