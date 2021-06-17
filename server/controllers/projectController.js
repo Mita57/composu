@@ -20,10 +20,10 @@ class ProjectController {
     }
 
     async getAllByUser(req, res) {
-        const {user} = req.query.user;
+        const user = req.query.user;
         const projs = await Projects.findAll({
             where: {
-                user: user
+                owner: user
             }
         });
         return res.json(projs);

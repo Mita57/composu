@@ -1,6 +1,6 @@
 import {$host} from "./index";
 
-export const getAllByUser = async (email) => {
+export const getAllProjsByUser = async (email) => {
     const data = await $host.get('api/project/getProjectsByUser', {
         params: {
             user: email

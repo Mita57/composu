@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {getByID} from "../http/musicianAPI";
 import {useParams} from 'react-router-dom';
 import {getAllByUser} from "../http/equipmentAPI";
+import {getAllProjsByUser} from "../http/ProjectsAPI";
 
 const MusicianPage = () => {
     const [musician, setMusician] = useState([]);
@@ -52,8 +53,8 @@ const MusicianPage = () => {
     }, []);
 
     useEffect(async () => {
-        const result = await getAllByUser(id);
-        setEquipment(result.data);
+        const result = await getAllProjsByUser(id);
+        setProjs(result.data);
     }, []);
 
     return (
@@ -72,6 +73,19 @@ const MusicianPage = () => {
                             {item.name}
                             <img src={'http://localhost:5000/' + item.picture} style={imgStyleSmol}></img><br></br>
                             <span style={{fontSize: '10pt', color: '#282828FF'}}>{item.band}<br></br></span><br></br>
+                            <span style={{fontSize: '10pt', color: '#282828FF'}}>{item.location}<br></br></span>
+                        </div>
+                    </a>
+                ))}
+            </div>
+            <h2 style={{fontFamily: 'sans-serif', textAlign: 'center'}}>Проекты</h2>
+            <div  style={containerStyle}>
+                {projs.map(item => (
+                    <a style={{textDecoration: 'none', color: '#000'}} href={'musicians/' + item.email}>
+                        <div style={itemStyle}>
+                            {item.title}
+                            <img src={'http://localhost:5000/' + item.picture} style={imgStyleSmol}></img><br></br>
+                            <span style={{fontSize: '10pt', color: '#282828FF'}}>{item.details}<br></br></span><br></br>
                             <span style={{fontSize: '10pt', color: '#282828FF'}}>{item.location}<br></br></span>
                         </div>
                     </a>
