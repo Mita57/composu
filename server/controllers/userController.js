@@ -14,7 +14,7 @@ const generateJwt = (id, email, role) => {
 
 class UserController {
     async registration(req, res, next) {
-        const {email, password} = req.body;
+        const {email, password, location, band} = req.body;
         if (!email || !password) {
             return next(ApiError.badRequest('Invalid email or password'));
         }
@@ -22,8 +22,19 @@ class UserController {
         if (candidate) {
             return next(ApiError.badRequest('A user with the same email already exists'));
         }
+
+        const picture = req.files ? req.files.picture: null;
+        let filename = '';
+
+        if (picture) {
+            filename = uuid.v4() + '.jpg';
+            await picture.mv(path.resolve(__dirname, '..', 'static', filename));
+        } else {
+            filename = 'defaultProject.jpg';
+        }
+
         const hashPassword = await bcrypt.hash(password, 5);
-        const user = await User.create({email, password: hashPassword});
+        const user = await User.create({email, band, location, password: hashPassword, photo: filename});
         const token = generateJwt(user.id, user.email, user.role);
         return res.json({token});
     }
@@ -100,9 +111,8 @@ class UserController {
         return res.json(users);
     }
 
-    async findUserById (req, res) {
+    async findUserById(req, res) {
         const id = req.query.email;
-
 
         const users = await User.findByPk(id);
         return res.json(users);

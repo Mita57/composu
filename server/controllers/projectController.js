@@ -7,10 +7,19 @@ const {Op} = require("sequelize");
 class ProjectController {
     async create(req, res, next) {
         try {
-            const {title, details, owner} = req.body;
-            const {picture} = req.files;
-            let filename = uuid.v4() + '.jpg';
-            await picture.mv(path.resolve(__dirname, '..', 'static', filename));
+            const {title, details} = req.body;
+            const picture = req.files ? req.files.picture: null;
+            const owner = req.user.email;
+
+            let filename = '';
+
+            if (picture) {
+                filename = uuid.v4() + '.jpg';
+                await picture.mv(path.resolve(__dirname, '..', 'static', filename));
+            } else {
+                filename = 'defaultProject.jpg';
+            }
+
 
             const project = await Projects.create({title, details, owner, picture: filename, state: 'o'});
             return res.json(project);

@@ -66,9 +66,11 @@ const Projects = () => {
                 ))}
             </div>
             {user.isAuth ?
-                <div style={addButton}>
-                    +
-                </div> : ''
+                <a href={'/newProject'}>
+                    <div style={addButton}>
+                        +
+                    </div>
+                </a> : ''
 
             }
         </div>

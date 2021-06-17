@@ -9,9 +9,8 @@ export const getAllProjsByUser = async (email) => {
     return data;
 }
 
-export const addProject = async () => {
-    const data = await $host.post('api/project/addProject', {
-    });
+export const addProject = async (formData) => {
+    const data = await $host.post('api/project/addProject', formData);
     return data;
 }
 

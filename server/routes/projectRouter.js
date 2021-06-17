@@ -1,8 +1,9 @@
 const Router = require('express');
 const router = new Router();
 const projectController = require('../controllers/projectController')
+const authMiddleware = require('../middleware/authMiddleware');
 
-router.post('/addProject', projectController.create);
+router.post('/addProject', authMiddleware, projectController.create);
 router.get('/getProjectsByUser', projectController.getAllByUser);
 router.get('/getProjectsWithFilter', projectController.getAllWithFilter);
 router.get('/getAll', projectController.getAll);
