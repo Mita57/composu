@@ -30,7 +30,7 @@ class UserController {
 
     async login(req, res, next) {
         const {email, password} = req.body;
-        const user = await User.findOne({where: {email}});
+        const user = await User.findByPk(email);
         if (!user) {
             return next(ApiError.notFound('User not found'));
         }
@@ -101,7 +101,7 @@ class UserController {
     }
 
     async findUsersByFilter(req, res) {
-        const {email, name, birth_date, band, location} = req.query;
+        const {email, name, birth_date, band, location} = req.query.filter;
 
         const users = await User.findAll({
             where: {

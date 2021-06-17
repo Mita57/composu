@@ -1,4 +1,4 @@
-const {Project} = require('../models/models');
+const {Projects} = require('../models/models');
 const ApiError = require('../error/ApiError');
 const uuid = require('uuid');
 const path = require('path');
@@ -12,7 +12,7 @@ class ProjectController {
             let filename = uuid.v4() + '.jpg';
             await picture.mv(path.resolve(__dirname, '..', 'static', filename));
 
-            const project = await Project.create({title, details, owner, picture: filename, state: 'o'});
+            const project = await Projects.create({title, details, owner, picture: filename, state: 'o'});
             return res.json(project);
         } catch (e) {
             next(ApiError.badRequest(e.message));
@@ -21,7 +21,7 @@ class ProjectController {
 
     async getAllByUser(req, res) {
         const {user} = req.query.user;
-        const projs = await Project.findAll({
+        const projs = await Projects.findAll({
             where: {
                 user: user
             }
@@ -32,7 +32,7 @@ class ProjectController {
     async getAllWithFilter(req, res) {
         const {title, details, owner} = req.query;
 
-        const projs = await Project.findAll({
+        const projs = await Projects.findAll({
             where: {
                 title: {
                     [Op.like]: `%${title}%`
@@ -51,7 +51,11 @@ class ProjectController {
 
     async getOne(req, res) {
         const projId = req.query.id;
-        const project = await Project.findByPk(projId);
+
+        const project = await Projects.findByPk(projId);
+        if (project === undefined) {
+            return res.json({msg: 'Nothing found'}).status(404);
+        }
         if (!project) {
             return res.status(404).json({message: 'No projects with this ID '});
         }
@@ -61,7 +65,7 @@ class ProjectController {
     async updateProj(req, res) {
         const {projId, title, details, state} = req.body;
         const {picture} = req.files;
-        const proj = Project.findByPk(projId);
+        const proj = Projects.findByPk(projId);
         if (picture) {
             let filename = uuid.v4() + '.jpg';
             await picture.mv(path.resolve(__dirname, '..', 'static', filename));
@@ -87,7 +91,7 @@ class ProjectController {
     async deleteProj(req, res) {
         const {projId} = req.body;
 
-        const proj = await Project.findByPk(projId);
+        const proj = await Projects.findByPk(projId);
         await proj.destroy();
 
         return res.json(projId);
