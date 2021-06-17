@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react';
 import {getAll} from "../http/musicianAPI";
-import {Route} from "react-router-dom";
 
 const Musicians = () => {
 

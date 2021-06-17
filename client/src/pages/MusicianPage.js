@@ -85,7 +85,7 @@ const MusicianPage = () => {
                         <div style={itemStyle}>
                             {item.title}
                             <img src={'http://localhost:5000/' + item.picture} style={imgStyleSmol}></img><br></br>
-                            <span style={{fontSize: '10pt', color: '#282828FF'}}>{item.details}<br></br></span><br></br>
+                            <span style={{fontSize: '10pt', color: '#282828FF'}}>{item.band}<br></br></span><br></br>
                             <span style={{fontSize: '10pt', color: '#282828FF'}}>{item.location}<br></br></span>
                         </div>
                     </a>

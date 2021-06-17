@@ -9,13 +9,13 @@ export const getAllProjsByUser = async (email) => {
     return data;
 }
 
-export const addProject = async (email) => {
+export const addProject = async () => {
     const data = await $host.post('api/project/addProject', {
     });
     return data;
 }
 
-export const getAll = async (email) => {
+export const getAll = async () => {
     const data = await $host.get('api/project/getAll');
     return data;
 }
