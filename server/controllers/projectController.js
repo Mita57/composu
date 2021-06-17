@@ -2,7 +2,7 @@ const {Project} = require('../models/models');
 const ApiError = require('../error/ApiError');
 const uuid = require('uuid');
 const path = require('path');
-const {Sequelize, Op} = require("sequelize");
+const {Op} = require("sequelize");
 
 class ProjectController {
     async create(req, res, next) {
@@ -20,7 +20,7 @@ class ProjectController {
     }
 
     async getAllByUser(req, res) {
-        const {user} = req.body;
+        const {user} = req.query.user;
         const projs = await Project.findAll({
             where: {
                 user: user
@@ -30,7 +30,7 @@ class ProjectController {
     }
 
     async getAllWithFilter(req, res) {
-        const {title, details, owner} = req.body;
+        const {title, details, owner} = req.query;
 
         const projs = await Project.findAll({
             where: {
@@ -50,7 +50,7 @@ class ProjectController {
     }
 
     async getOne(req, res) {
-        const projId = req.body;
+        const projId = req.query.id;
         const project = await Project.findByPk(projId);
         if (!project) {
             return res.status(404).json({message: 'No projects with this ID '});

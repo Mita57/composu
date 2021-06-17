@@ -2,6 +2,7 @@ const ApiError = require('../error/apiError');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const {User} = require('../models/models');
+const {Op} = require("sequelize");
 
 const generateJwt = (id, email, role) => {
     return jwt.sign(
@@ -41,10 +42,91 @@ class UserController {
         return res.json({token});
     }
 
-    async check(req, res, next) {
+    async check(req, res) {
         const token = generateJwt(req.user.id, req.user.email, req.user.role);
         return res.json({token});
     }
+
+    async updateCredentials(req, res) {
+        const {email, name, birth_date, bio, band, location} = req.body;
+
+        let user = await User.findByPk(req.user.email);
+
+        if (email) {
+            const isNewEmailTaken = !!await User.findByPk(email);
+
+            if (isNewEmailTaken) {
+                return res.JSON({msg: 'Email is already taken'}).status(409);
+            }
+            user.email = email;
+        }
+
+        if (name) {
+            user.name = name;
+        }
+
+        if (birth_date) {
+            user.birth_date = birth_date;
+        }
+
+        if (bio) {
+            user.bio = bio;
+        }
+
+        if (band) {
+            user.band = band;
+        }
+
+        if (location) {
+            user.location = location;
+        }
+        await user.save();
+
+        return res.json(user);
+    }
+
+    async removeUser(req, res) {
+        const {id} = req.body;
+
+        const user = await User.findByPk(id);
+        await user.destroy;
+        return res.json(id);
+    }
+
+    async findUserById (req, res) {
+        const {id} = req.query.id;
+
+        const users = await User.findByPk(id);
+        return res.json(id);
+    }
+
+    async findUsersByFilter(req, res) {
+        const {email, name, birth_date, band, location} = req.query;
+
+        const users = await User.findAll({
+            where: {
+                email: {
+                    [Op.like]: `%${email}%`
+                },
+                name: {
+                    [Op.like]: `%${name}%`
+                },
+                birth_date: {
+                    [Op.like]: `%${birth_date}%`
+                },
+                band: {
+                    [Op.like]: `%${band}%`
+                },
+                location: {
+                    [Op.like]: `%${location}%`
+                },
+            }
+        });
+
+        return res.json(users);
+    }
+
+
 }
 
 module.exports = new UserController();
